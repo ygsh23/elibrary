@@ -1,0 +1,33 @@
+<header class="header">
+  <div class="logo">
+    <h1>E-Library</h1>
+  </div>
+  <nav class="navigation">
+    <ul>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/books" routerLinkActive="active">Books</a>
+      </li>
+      <li *ngIf="isLoggedIn && isAdmin">
+        <a routerLink="/admin/books" routerLinkActive="active">Manage Books</a>
+      </li>
+      <li *ngIf="isLoggedIn && isAdmin">
+        <a routerLink="/admin/borrow-requests" routerLinkActive="active">Borrow Requests</a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/my-books" routerLinkActive="active">My Books</a>
+      </li>
+      <li *ngIf="!isLoggedIn">
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+      </li>
+      <li *ngIf="!isLoggedIn">
+        <a routerLink="/register" routerLinkActive="active">Register</a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a (click)="logout()" class="logout-link">Logout</a>
+      </li>
+    </ul>
+  </nav>
+</header>

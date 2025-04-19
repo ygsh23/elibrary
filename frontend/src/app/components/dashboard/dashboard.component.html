@@ -1,0 +1,15 @@
+<div class="dashboard-container">
+  <app-header></app-header>
+  
+  <div class="content">
+    <div *ngIf="isAdmin; else userDashboard">
+      <app-admin-dashboard></app-admin-dashboard>
+    </div>
+    
+    <ng-template #userDashboard>
+      <app-user-dashboard></app-user-dashboard>
+    </ng-template>
+  </div>
+  
+  <app-footer></app-footer>
+</div>
