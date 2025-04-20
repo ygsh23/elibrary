@@ -13,7 +13,7 @@
     
     <div *ngIf="!loading && book" class="book-details">
       <div class="back-button">
-        <button mat-button color="primary" routerLink="/books">
+        <button mat-button routerLink="/books">
           <mat-icon>arrow_back</mat-icon> Back to Books
         </button>
       </div>
@@ -31,23 +31,42 @@
                 <img [src]="book.coverImageUrl" alt="{{book.title}} cover">
               </div>
               <div class="book-cover placeholder" *ngIf="!book.coverImageUrl">
-                <mat-icon>menu_book</mat-icon>
+                <mat-icon>auto_stories</mat-icon>
               </div>
               
               <div class="book-details-info">
-                <p><strong>ISBN:</strong> {{book.isbn}}</p>
-                <p><strong>Category:</strong> {{book.category}}</p>
-                <p><strong>Publisher:</strong> {{book.publisher}}</p>
-                <p><strong>Published Year:</strong> {{book.publishedYear}}</p>
-                <p><strong>Available Copies:</strong> {{book.availableCopies}} / {{book.totalCopies}}</p>
-                <p class="book-description"><strong>Description:</strong> {{book.description}}</p>
+                <div class="book-metadata">
+                  <div class="metadata-item">
+                    <mat-icon>category</mat-icon>
+                    <span>{{book.category}}</span>
+                  </div>
+                  <div class="metadata-item">
+                    <mat-icon>numbers</mat-icon>
+                    <span>ISBN: {{book.isbn}}</span>
+                  </div>
+                  <div class="metadata-item">
+                    <mat-icon>business</mat-icon>
+                    <span>{{book.publisher}}</span>
+                  </div>
+                  <div class="metadata-item">
+                    <mat-icon>calendar_today</mat-icon>
+                    <span>{{book.publishedYear}}</span>
+                  </div>
+                </div>
+                
+                <div class="availability-indicator" [ngClass]="book.availableCopies > 0 ? 'available' : 'unavailable'">
+                  <mat-icon>{{book.availableCopies > 0 ? 'check_circle' : 'cancel'}}</mat-icon>
+                  <span>{{book.availableCopies > 0 ? 'Available' : 'Unavailable'}} ({{book.availableCopies}}/{{book.totalCopies}})</span>
+                </div>
+                
+                <p class="book-description">{{book.description}}</p>
               </div>
             </div>
           </mat-card-content>
           
           <mat-card-actions>
-            <button mat-raised-button color="primary" [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook()">
-              Borrow
+            <button mat-raised-button [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook()">
+              <mat-icon>book</mat-icon> Borrow
             </button>
           </mat-card-actions>
         </mat-card>

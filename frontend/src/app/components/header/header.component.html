@@ -1,33 +1,157 @@
-<header class="header">
-  <div class="logo">
-    <h1>E-Library</h1>
+<div class="cosmic-header">
+  <div class="nebula-background">
+    <div class="stars"></div>
+    <div class="nebula-glow"></div>
   </div>
-  <nav class="navigation">
-    <ul>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/books" routerLinkActive="active">Books</a>
-      </li>
-      <li *ngIf="isLoggedIn && isAdmin">
-        <a routerLink="/admin/books" routerLinkActive="active">Manage Books</a>
-      </li>
-      <li *ngIf="isLoggedIn && isAdmin">
-        <a routerLink="/admin/borrow-requests" routerLinkActive="active">Borrow Requests</a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/my-books" routerLinkActive="active">My Books</a>
-      </li>
-      <li *ngIf="!isLoggedIn">
-        <a routerLink="/login" routerLinkActive="active">Login</a>
-      </li>
-      <li *ngIf="!isLoggedIn">
-        <a routerLink="/register" routerLinkActive="active">Register</a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a (click)="logout()" class="logout-link">Logout</a>
-      </li>
-    </ul>
-  </nav>
-</header>
+  
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/" class="logo-link">
+        <div class="logo-orbit">
+          <div class="logo-planet"></div>
+          <div class="logo-ring"></div>
+        </div>
+        <span class="logo-text">Athenaeum</span>
+      </a>
+    </div>
+    
+    <div class="cosmic-nav">
+      <div class="nav-galaxy">
+        <a routerLink="/books" routerLinkActive="active" class="nav-planet">
+          <div class="planet-glow"></div>
+          <div class="planet-icon">
+            <mat-icon>auto_stories</mat-icon>
+          </div>
+          <span class="planet-label">Explore</span>
+        </a>
+        
+        <a *ngIf="isLoggedIn" routerLink="/my-books" routerLinkActive="active" class="nav-planet">
+          <div class="planet-glow"></div>
+          <div class="planet-icon">
+            <mat-icon>bookmark</mat-icon>
+          </div>
+          <span class="planet-label">My Books</span>
+        </a>
+        
+        <a *ngIf="isLoggedIn && isAdmin" routerLink="/admin/dashboard" routerLinkActive="active" class="nav-planet">
+          <div class="planet-glow"></div>
+          <div class="planet-icon">
+            <mat-icon>dashboard</mat-icon>
+          </div>
+          <span class="planet-label">Admin</span>
+        </a>
+        
+        <a *ngIf="isLoggedIn" routerLink="/dashboard" routerLinkActive="active" class="nav-planet">
+          <div class="planet-glow"></div>
+          <div class="planet-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+          <span class="planet-label">Profile</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="user-comet" *ngIf="isLoggedIn">
+      <div class="comet-trail"></div>
+      <div class="user-avatar" [matMenuTriggerFor]="userMenu">
+        <span class="avatar-text">{{userInitials}}</span>
+      </div>
+      <mat-menu #userMenu="matMenu" class="cosmic-menu">
+        <div class="menu-user-info">
+          <span class="menu-username">{{userName}}</span>
+          <span class="menu-role">{{isAdmin ? 'Administrator' : 'Reader'}}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </button>
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+    
+    <div class="auth-meteors" *ngIf="!isLoggedIn">
+      <a routerLink="/login" class="meteor login-meteor">
+        <div class="meteor-tail"></div>
+        <span>Login</span>
+      </a>
+      <a routerLink="/register" class="meteor register-meteor">
+        <div class="meteor-tail"></div>
+        <span>Register</span>
+      </a>
+    </div>
+    
+    <button mat-icon-button class="menu-toggle" (click)="toggleMenu()" *ngIf="isLoggedIn">
+      <div class="toggle-orbit">
+        <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-nav-drawer" [class.open]="isMenuOpen">
+  <div class="drawer-background">
+    <div class="stars"></div>
+    <div class="nebula-glow"></div>
+  </div>
+  
+  <div class="drawer-content">
+    <div class="drawer-user" *ngIf="isLoggedIn">
+      <div class="drawer-avatar">
+        <span>{{userInitials}}</span>
+      </div>
+      <div class="drawer-user-info">
+        <span class="drawer-username">{{userName}}</span>
+        <span class="drawer-role">{{isAdmin ? 'Administrator' : 'Reader'}}</span>
+      </div>
+    </div>
+    
+    <div class="drawer-nav">
+      <a routerLink="/books" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>auto_stories</mat-icon>
+        <span>Explore Books</span>
+      </a>
+      
+      <a *ngIf="isLoggedIn" routerLink="/my-books" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>bookmark</mat-icon>
+        <span>My Books</span>
+      </a>
+      
+      <a *ngIf="isLoggedIn" routerLink="/dashboard" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      
+      <a *ngIf="isLoggedIn && isAdmin" routerLink="/admin/dashboard" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span>Admin Dashboard</span>
+      </a>
+      
+      <div class="drawer-divider"></div>
+      
+      <a *ngIf="isLoggedIn" (click)="logout(); closeMenu()" class="drawer-nav-item">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </a>
+      
+      <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>login</mat-icon>
+        <span>Login</span>
+      </a>
+      
+      <a *ngIf="!isLoggedIn" routerLink="/register" routerLinkActive="active" class="drawer-nav-item" (click)="closeMenu()">
+        <mat-icon>person_add</mat-icon>
+        <span>Register</span>
+      </a>
+    </div>
+  </div>
+</div>

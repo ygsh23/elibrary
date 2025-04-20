@@ -8,18 +8,19 @@ import { BookFormComponent } from './components/book-form/book-form.component';
 import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { BorrowListComponent } from './components/borrow-list/borrow-list.component';
+import { authGuard, adminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'books', component: BookListComponent },
   { path: 'books/:id', component: BookDetailsComponent },
-  { path: 'my-books', component: BorrowListComponent },
-  { path: 'admin/books', component: AdminDashboardComponent },
-  { path: 'admin/books/add', component: BookFormComponent },
-  { path: 'admin/books/edit/:id', component: BookFormComponent },
-  { path: 'admin/borrow-requests', component: AdminDashboardComponent },
-  { path: '**', redirectTo: '/dashboard' } // Wildcard route for 404
+  { path: 'my-books', component: BorrowListComponent, canActivate: [authGuard] },
+  { path: 'admin/books', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
+  { path: 'admin/books/add', component: BookFormComponent, canActivate: [authGuard, adminGuard] },
+  { path: 'admin/books/edit/:id', component: BookFormComponent, canActivate: [authGuard, adminGuard] },
+  { path: 'admin/borrow-requests', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
+  { path: '**', redirectTo: '/login' } // Wildcard route for 404
 ];

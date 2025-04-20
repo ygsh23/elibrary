@@ -1,94 +1,217 @@
-<div class="user-dashboard">
-  <h2>Welcome, {{userName}}!</h2>
+<div class="athenaeum-dashboard">
+  <!-- Immersive Background -->
+  <div class="cosmic-background">
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="clouds"></div>
+  </div>
   
-  <div class="dashboard-section">
-    <div class="section-header">
-      <h3>Search Books</h3>
-    </div>
-    <div class="search-container">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search by title, author, or category</mat-label>
-        <input matInput [(ngModel)]="searchQuery" (keyup.enter)="searchBooks()">
-        <button mat-icon-button matSuffix (click)="searchBooks()">
-          <mat-icon>search</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-  </div>
-
-  <div class="dashboard-section">
-    <div class="section-header">
-      <h3>Available Books</h3>
-    </div>
-    <div *ngIf="loading" class="loading-spinner">
-      <mat-spinner diameter="40"></mat-spinner>
-    </div>
-    <div *ngIf="!loading && books.length === 0" class="no-data">
-      <p>No books available at the moment.</p>
-    </div>
-    <div *ngIf="!loading && books.length > 0" class="books-grid">
-      <mat-card *ngFor="let book of books" class="book-card">
-        <mat-card-header>
-          <mat-card-title>{{book.title}}</mat-card-title>
-          <mat-card-subtitle>{{book.author}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p><strong>Category:</strong> {{book.category}}</p>
-          <p><strong>Available:</strong> {{book.availableCopies}} / {{book.totalCopies}}</p>
-          <p class="book-description">{{book.description | slice:0:100}}{{book.description.length > 100 ? '...' : ''}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button color="primary" [routerLink]="['/books', book.id]">Details</button>
-          <button mat-raised-button color="primary" [disabled]="book.availableCopies === 0" (click)="borrowBook(book.id)">Borrow</button>
-        </mat-card-actions>
-      </mat-card>
+  <!-- Floating Navigation -->
+  <div class="orbital-nav">
+    <div class="nav-orbit">
+      <div class="nav-item active" data-section="overview">
+        <div class="nav-icon"><mat-icon>dashboard</mat-icon></div>
+        <div class="nav-label">Overview</div>
+      </div>
+      <div class="nav-item" data-section="collection">
+        <div class="nav-icon"><mat-icon>auto_stories</mat-icon></div>
+        <div class="nav-label">Collection</div>
+      </div>
+      <div class="nav-item" data-section="explore">
+        <div class="nav-icon"><mat-icon>explore</mat-icon></div>
+        <div class="nav-label">Explore</div>
+      </div>
+      <div class="nav-item" data-section="history">
+        <div class="nav-icon"><mat-icon>history</mat-icon></div>
+        <div class="nav-label">History</div>
+      </div>
+      <div class="nav-item" data-section="profile">
+        <div class="nav-icon"><mat-icon>person</mat-icon></div>
+        <div class="nav-label">Profile</div>
+      </div>
     </div>
   </div>
 
-  <div class="dashboard-section">
-    <div class="section-header">
-      <h3>My Borrowed Books</h3>
+  <!-- User Profile Sphere -->
+  <div class="user-sphere">
+    <div class="user-avatar" [style.background-image]="'url(assets/images/avatar.jpg)'"></div>
+    <div class="user-info">
+      <h2 class="user-name">{{userName}}</h2>
+      <div class="user-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{borrowedBooksCount}}</div>
+          <div class="stat-label">Borrowed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{readingHistory.length}}</div>
+          <div class="stat-label">Read</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{dueSoonBooks}}</div>
+          <div class="stat-label">Due Soon</div>
+        </div>
+      </div>
     </div>
-    <div *ngIf="loadingBorrowRecords" class="loading-spinner">
-      <mat-spinner diameter="40"></mat-spinner>
-    </div>
-    <div *ngIf="!loadingBorrowRecords && borrowRecords.length === 0" class="no-data">
-      <p>You haven't borrowed any books yet.</p>
-    </div>
-    <div *ngIf="!loadingBorrowRecords && borrowRecords.length > 0" class="borrow-records">
-      <table mat-table [dataSource]="borrowRecords" class="borrow-table">
-        <ng-container matColumnDef="book">
-          <th mat-header-cell *matHeaderCellDef>Book</th>
-          <td mat-cell *matCellDef="let record">{{record.book.title}}</td>
-        </ng-container>
+  </div>
 
-        <ng-container matColumnDef="author">
-          <th mat-header-cell *matHeaderCellDef>Author</th>
-          <td mat-cell *matCellDef="let record">{{record.book.author}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="borrowDate">
-          <th mat-header-cell *matHeaderCellDef>Borrow Date</th>
-          <td mat-cell *matCellDef="let record">{{record.borrowDate | date:'mediumDate'}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let record">
-            <span [ngClass]="'status-' + record.status.toLowerCase()">{{record.status}}</span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let record">
-            <button mat-button color="warn" *ngIf="record.status === 'APPROVED'" (click)="returnBook(record.id)">Return</button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
+  <!-- Main Content Area -->
+  <div class="content-universe">
+    <!-- Overview Section -->
+    <section class="content-section active" id="overview">
+      <div class="section-title">
+        <h1>Your Literary Universe</h1>
+        <div class="cosmos-divider"></div>
+      </div>
+      
+      <!-- Featured Books Carousel -->
+      <div class="featured-showcase">
+        <h2 class="showcase-title">Featured Discoveries</h2>
+        <div class="showcase-container">
+          <div *ngIf="loading" class="cosmic-loader">
+            <div class="loader-planet"></div>
+            <div class="loader-orbit"></div>
+          </div>
+          
+          <div *ngIf="!loading && featuredBooks.length === 0" class="empty-galaxy">
+            <div class="empty-planet"></div>
+            <p>No featured books in your universe yet</p>
+          </div>
+          
+          <div *ngIf="!loading && featuredBooks.length > 0" class="book-cosmos">
+            <div class="book-planet" *ngFor="let book of featuredBooks; let i = index" 
+                 [style.--orbit-position]="i * (360 / featuredBooks.length) + 'deg'"
+                 [style.--orbit-distance]="'calc(120px + ' + (i % 3) * 40 + 'px)'">
+              <div class="book-cover" [style.background]="getRandomGradient()">
+                <div class="book-glow"></div>
+                <div class="book-title">{{book.title}}</div>
+                <div class="book-author">{{book.author}}</div>
+                <div class="book-category">{{book.category}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Current Borrowed Books -->
+      <div class="borrowed-galaxy">
+        <h2 class="galaxy-title">Your Current Voyages</h2>
+        <div class="galaxy-container">
+          <div *ngIf="loadingBorrowed" class="cosmic-loader">
+            <div class="loader-planet"></div>
+            <div class="loader-orbit"></div>
+          </div>
+          
+          <div *ngIf="!loadingBorrowed && borrowedBooks.length === 0" class="empty-galaxy">
+            <div class="empty-planet"></div>
+            <p>No books currently borrowed</p>
+            <button class="nebula-button" routerLink="/books">Discover Books</button>
+          </div>
+          
+          <div *ngIf="!loadingBorrowed && borrowedBooks.length > 0" class="borrowed-solar-system">
+            <div class="borrowed-planet" *ngFor="let borrowed of borrowedBooks; let i = index">
+              <div class="planet-ring" 
+                   [ngClass]="{'overdue-ring': isOverdue(borrowed), 'due-soon-ring': isDueSoon(borrowed), 'on-time-ring': !isOverdue(borrowed) && !isDueSoon(borrowed)}">
+                <div class="ring-status">
+                  <mat-icon>{{isOverdue(borrowed) ? 'error' : (isDueSoon(borrowed) ? 'warning' : 'check_circle')}}</mat-icon>
+                  <span>{{isOverdue(borrowed) ? 'Overdue' : (isDueSoon(borrowed) ? 'Due Soon' : 'On Time')}}</span>
+                </div>
+              </div>
+              <div class="planet-surface" [style.background]="getRandomGradient()">
+                <div class="book-info">
+                  <h3>{{borrowed.book.title}}</h3>
+                  <p>by {{borrowed.book.author}}</p>
+                  <div class="due-date">
+                    <mat-icon>event</mat-icon>
+                    <span>Due: {{borrowed.dueDate | date:'mediumDate'}}</span>
+                  </div>
+                </div>
+                <div class="planet-actions">
+                  <button class="action-button renew" [disabled]="(borrowed.renewCount || 0) >= 2" (click)="renewBook(borrowed.id)">
+                    <mat-icon>autorenew</mat-icon>
+                    <span>Renew</span>
+                  </button>
+                  <button class="action-button return" (click)="returnBook(borrowed.id)">
+                    <mat-icon>assignment_return</mat-icon>
+                    <span>Return</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Personalized Recommendations -->
+      <div class="recommendation-nebula">
+        <h2 class="nebula-title">Cosmic Recommendations</h2>
+        <div class="nebula-container">
+          <div *ngIf="loading" class="cosmic-loader">
+            <div class="loader-planet"></div>
+            <div class="loader-orbit"></div>
+          </div>
+          
+          <div *ngIf="!loading && recommendedBooks.length === 0" class="empty-galaxy">
+            <div class="empty-planet"></div>
+            <p>No recommendations available yet</p>
+          </div>
+          
+          <div *ngIf="!loading && recommendedBooks.length > 0" class="recommendation-stars">
+            <div class="star-book" *ngFor="let book of recommendedBooks; let i = index"
+                 [style.--star-position]="i * (360 / recommendedBooks.length) + 'deg'"
+                 [style.--star-distance]="'calc(150px + ' + (i % 2) * 50 + 'px)'">
+              <div class="star-glow"></div>
+              <div class="star-content">
+                <h3>{{book.title}}</h3>
+                <p>{{book.author}}</p>
+                <div class="star-category">{{book.category}}</div>
+                <button class="borrow-button" (click)="borrowBook(book.id)">
+                  <mat-icon>add_circle</mat-icon>
+                  <span>Borrow</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Reading History Timeline -->
+    <section class="content-section" id="history">
+      <div class="section-title">
+        <h1>Your Reading Voyage</h1>
+        <div class="cosmos-divider"></div>
+      </div>
+      
+      <div class="history-universe">
+        <div *ngIf="loadingHistory" class="cosmic-loader">
+          <div class="loader-planet"></div>
+          <div class="loader-orbit"></div>
+        </div>
+        
+        <div *ngIf="!loadingHistory && readingHistory.length === 0" class="empty-galaxy">
+          <div class="empty-planet"></div>
+          <p>Your reading history will appear here</p>
+        </div>
+        
+        <div *ngIf="!loadingHistory && readingHistory.length > 0" class="history-timeline">
+          <div class="timeline-path"></div>
+          <div class="timeline-event" *ngFor="let history of readingHistory; let i = index"
+               [style.--event-position]="i * (100 / (readingHistory.length > 1 ? readingHistory.length - 1 : 1)) + '%'">
+            <div class="event-node"></div>
+            <div class="event-content" [ngClass]="{'event-left': i % 2 === 0, 'event-right': i % 2 !== 0}">
+              <div class="event-date">{{history.returnDate | date:'mediumDate'}}</div>
+              <div class="event-book">
+                <h3>{{history.book.title}}</h3>
+                <p>by {{history.book.author}}</p>
+                <div class="event-duration">
+                  <span>{{history.borrowDate | date:'shortDate'}} - {{history.returnDate | date:'shortDate'}}</span>
+                  <span class="duration-days">({{getDurationDays(history.borrowDate, history.returnDate)}} days)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

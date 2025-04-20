@@ -72,6 +72,12 @@ export class BorrowRecordService {
       catchError(this.handleError<BorrowRecord>('returnBook'))
     );
   }
+  
+  renewBook(id: number): Observable<BorrowRecord> {
+    return this.http.put<BorrowRecord>(`${this.apiUrl}/${id}/renew`, {}).pipe(
+      catchError(this.handleError<BorrowRecord>('renewBook'))
+    );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

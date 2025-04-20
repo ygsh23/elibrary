@@ -1,23 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { BookService } from '../../services/book.service';
+import { UserService } from '../../services/user.service';
+import { BorrowService } from '../../services/borrow.service';
 import { Book } from '../../models/book.model';
 import { User } from '../../models/user.model';
-import { BorrowRecord } from '../../models/borrow-record.model';
-import { BookService } from '../../services/book.service';
-import { AuthService } from '../../services/auth.service';
-import { BorrowRecordService } from '../../services/borrow-record.service';
+import { BorrowRecord, BorrowStatus } from '../../models/borrow-record.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,43 +17,38 @@ import { BorrowRecordService } from '../../services/borrow-record.service';
   imports: [
     CommonModule,
     FormsModule,
-    MatTabsModule,
-    MatTableModule,
-    MatButtonModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatButtonToggleModule
+    MatButtonModule,
+    MatDialogModule
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  // Books
+  // Active section tracking
+  activeSection: 'books' | 'requests' | 'users' = 'books';
+  
+  // Books section
   books: Book[] = [];
-  searchQuery = '';
   loading = false;
-  bookColumns: string[] = ['title', 'author', 'category', 'copies', 'actions'];
-
-  // Borrow Requests
+  searchQuery = '';
+  
+  // Requests section
   borrowRequests: BorrowRecord[] = [];
-  filteredBorrowRequests: BorrowRecord[] = [];
-  requestFilter = 'PENDING';
+  filteredRequests: BorrowRecord[] = [];
   loadingRequests = false;
-  requestColumns: string[] = ['user', 'book', 'borrowDate', 'returnDate', 'status', 'actions'];
-
-  // Users
+  requestFilter: BorrowStatus | 'ALL' = 'PENDING';
+  
+  // Users section
   users: User[] = [];
   loadingUsers = false;
-  userColumns: string[] = ['name', 'email', 'role', 'actions'];
+  userSearchQuery = '';
 
   constructor(
     private bookService: BookService,
-    private authService: AuthService,
-    private borrowRecordService: BorrowRecordService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private userService: UserService,
+    private borrowService: BorrowService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -70,7 +57,12 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Books methods
+  // Navigation methods
+  setActiveSection(section: 'books' | 'requests' | 'users'): void {
+    this.activeSection = section;
+  }
+
+  // Books section methods
   loadBooks(): void {
     this.loading = true;
     this.bookService.getAllBooks().subscribe({
@@ -78,10 +70,9 @@ export class AdminDashboardComponent implements OnInit {
         this.books = books;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading books:', error);
         this.loading = false;
-        this.snackBar.open('Failed to load books. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }
@@ -98,18 +89,18 @@ export class AdminDashboardComponent implements OnInit {
         this.books = books;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error searching books:', error);
         this.loading = false;
-        this.snackBar.open('Failed to search books. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }
 
   openBookForm(book?: Book): void {
-    // This would typically open a dialog with a book form
-    // For now, we'll just show a message
-    this.snackBar.open('Book form would open here', 'Close', { duration: 3000 });
+    // Implementation for book form dialog
+    console.log('Open book form', book);
+    // For now, we'll just reload books after a delay to simulate adding/editing
+    setTimeout(() => this.loadBooks(), 1000);
   }
 
   editBook(book: Book): void {
@@ -120,90 +111,154 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to delete this book?')) {
       this.bookService.deleteBook(bookId).subscribe({
         next: () => {
-          this.snackBar.open('Book deleted successfully!', 'Close', { duration: 3000 });
-          this.loadBooks();
+          this.books = this.books.filter(b => b.id !== bookId);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting book:', error);
-          this.snackBar.open('Failed to delete book. Please try again.', 'Close', { duration: 3000 });
         }
       });
     }
   }
 
-  // Borrow Requests methods
+  // Requests section methods
   loadBorrowRequests(): void {
     this.loadingRequests = true;
-    this.borrowRecordService.getAllBorrowRecords().subscribe({
-      next: (records) => {
-        this.borrowRequests = records;
+    this.borrowService.getAllBorrowRecords().subscribe({
+      next: (requests: BorrowRecord[]) => {
+        this.borrowRequests = requests;
         this.filterRequests();
         this.loadingRequests = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading borrow requests:', error);
         this.loadingRequests = false;
-        this.snackBar.open('Failed to load borrow requests. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }
 
+  setRequestFilter(filter: BorrowStatus | 'ALL'): void {
+    this.requestFilter = filter;
+    this.filterRequests();
+  }
+
   filterRequests(): void {
     if (this.requestFilter === 'ALL') {
-      this.filteredBorrowRequests = this.borrowRequests;
+      this.filteredRequests = [...this.borrowRequests];
     } else {
-      this.filteredBorrowRequests = this.borrowRequests.filter(
+      this.filteredRequests = this.borrowRequests.filter(
         request => request.status === this.requestFilter
       );
     }
   }
 
-  approveBorrowRequest(requestId: number): void {
-    this.borrowRecordService.approveBorrowRequest(requestId).subscribe({
+  approveRequest(requestId: number): void {
+    this.borrowService.approveBorrowRequest(requestId).subscribe({
       next: () => {
-        this.snackBar.open('Borrow request approved!', 'Close', { duration: 3000 });
-        this.loadBorrowRequests();
-        this.loadBooks(); // Refresh books to update available copies
+        // Update the status in our local array
+        const request = this.borrowRequests.find(r => r.id === requestId);
+        if (request) {
+          request.status = 'APPROVED';
+          this.filterRequests();
+        }
       },
-      error: (error) => {
-        console.error('Error approving borrow request:', error);
-        this.snackBar.open('Failed to approve borrow request. Please try again.', 'Close', { duration: 3000 });
+      error: (error: any) => {
+        console.error('Error approving request:', error);
       }
     });
   }
 
-  rejectBorrowRequest(requestId: number): void {
-    this.borrowRecordService.rejectBorrowRequest(requestId).subscribe({
+  rejectRequest(requestId: number): void {
+    this.borrowService.rejectBorrowRequest(requestId).subscribe({
       next: () => {
-        this.snackBar.open('Borrow request rejected!', 'Close', { duration: 3000 });
-        this.loadBorrowRequests();
+        // Update the status in our local array
+        const request = this.borrowRequests.find(r => r.id === requestId);
+        if (request) {
+          request.status = 'REJECTED';
+          this.filterRequests();
+        }
       },
-      error: (error) => {
-        console.error('Error rejecting borrow request:', error);
-        this.snackBar.open('Failed to reject borrow request. Please try again.', 'Close', { duration: 3000 });
+      error: (error: any) => {
+        console.error('Error rejecting request:', error);
       }
     });
   }
 
-  // Users methods
+  markAsReturned(requestId: number): void {
+    this.borrowService.markAsReturned(requestId).subscribe({
+      next: () => {
+        // Update the status in our local array
+        const request = this.borrowRequests.find(r => r.id === requestId);
+        if (request) {
+          request.status = 'RETURNED';
+          this.filterRequests();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error marking as returned:', error);
+      }
+    });
+  }
+
+  isOverdue(request: BorrowRecord): boolean {
+    if (request.status !== 'APPROVED' || !request.dueDate) {
+      return false;
+    }
+    
+    const dueDate = new Date(request.dueDate);
+    const today = new Date();
+    
+    return today > dueDate;
+  }
+
+  // Users section methods
   loadUsers(): void {
     this.loadingUsers = true;
-    this.authService.getAllUsers().subscribe({
-      next: (users) => {
+    this.userService.getAllUsers().subscribe({
+      next: (users: User[]) => {
         this.users = users;
         this.loadingUsers = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading users:', error);
         this.loadingUsers = false;
-        this.snackBar.open('Failed to load users. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }
 
-  viewUserBorrowHistory(userId: number): void {
-    // This would typically open a dialog showing the user's borrow history
-    // For now, we'll just show a message
-    this.snackBar.open('User borrow history would show here', 'Close', { duration: 3000 });
+  searchUsers(): void {
+    if (!this.userSearchQuery.trim()) {
+      this.loadUsers();
+      return;
+    }
+
+    this.loadingUsers = true;
+    this.userService.searchUsers(this.userSearchQuery).subscribe({
+      next: (users: User[]) => {
+        this.users = users;
+        this.loadingUsers = false;
+      },
+      error: (error: any) => {
+        console.error('Error searching users:', error);
+        this.loadingUsers = false;
+      }
+    });
+  }
+
+  editUser(user: User): void {
+    // Implementation for user edit dialog
+    console.log('Edit user', user);
+  }
+
+  toggleUserStatus(user: User): void {
+    const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+    
+    this.userService.updateUserStatus(user.id, newStatus).subscribe({
+      next: () => {
+        user.status = newStatus as 'ACTIVE' | 'INACTIVE';
+      },
+      error: (error: any) => {
+        console.error('Error updating user status:', error);
+      }
+    });
   }
 }

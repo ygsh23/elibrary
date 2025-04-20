@@ -1,4 +1,270 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Modern Dark Theme Color Palette */
+:root {
+  --primary: #7e57c2;
+  --primary-light: #b085f5;
+  --primary-dark: #5e35b1;
+  --secondary: #5c6bc0;
+  --secondary-light: #8e99f3;
+  --secondary-dark: #3949ab;
+  --accent: #26a69a;
+  --accent-light: #64d8cb;
+  --accent-dark: #00897b;
+  --text-on-primary: #ffffff;
+  --text-on-secondary: #ffffff;
+  --background: #0a0e17;
+  --background-gradient: linear-gradient(135deg, #0a0e17 0%, #1a1f2c 100%);
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --error: #f44336;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --info: #2196f3;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-disabled: rgba(255, 255, 255, 0.4);
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --gradient-primary: linear-gradient(135deg, #7e57c2 0%, #5e35b1 100%);
+  --gradient-secondary: linear-gradient(135deg, #5c6bc0 0%, #3949ab 100%);
+  --gradient-accent: linear-gradient(135deg, #26a69a 0%, #00897b 100%);
+  --gradient-error: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
+}
+
+/* Base Styles */
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--background-gradient);
+  line-height: 1.5;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+h6 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}
+
+/* Material Overrides */
+.mat-mdc-card {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 35px var(--shadow-color) !important;
+  transition: all 0.3s ease;
+}
+
+.mat-mdc-card:hover {
+  box-shadow: 0 20px 40px var(--shadow-color) !important;
+  transform: translateY(-5px);
+  background: var(--surface-hover) !important;
+}
+
+.mat-mdc-card-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-card-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+.mat-mdc-raised-button.mat-primary {
+  background: var(--gradient-primary) !important;
+  color: var(--text-on-primary) !important;
+  border-radius: 50px !important;
+  padding: 0 24px !important;
+  transition: all 0.3s ease !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover:not([disabled]) {
+  box-shadow: 0 5px 15px rgba(94, 53, 177, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+.mat-mdc-raised-button[disabled] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-disabled) !important;
+}
+
+.mat-mdc-button {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-button:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-flex {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 0.5em 1em !important;
+  border: 1px solid var(--border) !important;
+  transition: all 0.3s ease !important;
+}
+
+.mat-mdc-form-field-flex:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mat-mdc-form-field-underline {
+  display: none !important;
+}
+
+.mat-mdc-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.mat-mdc-form-field-label {
+  color: var(--text-secondary) !important;
+}
+
+.mat-mdc-input-element {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-form-field-outline {
+  display: none !important;
+}
+
+/* Table Styles */
+.mat-mdc-table {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.mat-mdc-cell {
+  color: var(--text-primary) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.mat-mdc-row:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, #fff 30%, rgba(255, 255, 255, 0.7) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+}

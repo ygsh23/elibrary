@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,20 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/api/users';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  private isBrowser: boolean;
 
-  constructor(private http: HttpClient) {
-    // Check if user is already logged in
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    
+    // Check if user is already logged in (only in browser context)
+    if (this.isBrowser) {
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        this.currentUserSubject.next(JSON.parse(storedUser));
+      }
     }
   }
 
@@ -23,19 +32,23 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(user => {
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          if (this.isBrowser) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+          }
           this.currentUserSubject.next(user);
         })
       );
   }
 
-  register(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, user);
+  logout(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem('currentUser');
+    }
+    this.currentUserSubject.next(null);
   }
 
-  logout(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+  register(user: User): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/register`, user);
   }
 
   getCurrentUser(): User | null {
