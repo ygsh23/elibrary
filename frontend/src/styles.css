@@ -1,5 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Cosmic Dialog Styles */
+.cosmic-dialog-container .mat-mdc-dialog-surface {
+  background: linear-gradient(135deg, #0a0e17 0%, #1a1f2c 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(126, 87, 194, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  color: var(--text-primary);
+  position: relative;
+}
+
+.cosmic-dialog-container .mat-mdc-dialog-surface::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2Ij48cmVjdCBmaWxsPSJub25lIiB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSI1MCIgY3k9IjUwIiByPSIxIi8+PGNpcmNsZSBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMSIgY3g9IjEyMCIgY3k9IjQwIiByPSIxLjIiLz48Y2lyY2xlIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xIiBjeD0iMTkwIiBjeT0iNzAiIHI9IjEuMSIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSIyMzAiIGN5PSIzMCIgcj0iMSIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSIyMCIgY3k9IjEzMCIgcj0iMS4yIi8+PGNpcmNsZSBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMSIgY3g9IjkwIiBjeT0iMTYwIiByPSIxIi8+PGNpcmNsZSBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMSIgY3g9IjE1MCIgY3k9IjEyMCIgcj0iMS4xIi8+PGNpcmNsZSBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMSIgY3g9IjIxMCIgY3k9IjE1MCIgcj0iMSIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSI1MCIgY3k9IjIxMCIgcj0iMS4yIi8+PGNpcmNsZSBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMSIgY3g9IjExMCIgY3k9IjI0MCIgcj0iMSIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSIxODAiIGN5PSIyMDAiIHI9IjEuMSIvPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSIyNDAiIGN5PSIyMzAiIHI9IjEiLz48L3N2Zz4=');
+  background-size: 1000px 1000px;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.cosmic-dialog-container .mat-mdc-dialog-surface::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, rgba(126, 87, 194, 0.1) 0%, rgba(126, 87, 194, 0) 70%);
+  z-index: -1;
+}
+
 /* Modern Dark Theme Color Palette */
 :root {
   --primary: #7e57c2;

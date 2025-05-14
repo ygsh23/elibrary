@@ -37,7 +37,9 @@ export class BorrowListComponent implements OnInit {
   loading = false;
   userId: number | null = null;
   statusFilter = 'ALL';
-  displayedColumns: string[] = ['book', 'author', 'borrowDate', 'returnDate', 'status', 'actions'];
+  displayedColumns: string[] = ['book', 'author', 'borrowDate', 'dueDate', 'status', 'actions'];
+  // displayedColumns: string[] = ['borrowDate', 'dueDate', 'status', 'actions'];
+  // displayedColumns: string[] = ['book', 'author', 'borrowDate', 'returnDate', 'status', 'actions'];
 
   constructor(
     private borrowRecordService: BorrowRecordService,
@@ -62,6 +64,7 @@ export class BorrowListComponent implements OnInit {
       next: (records: BorrowRecord[]) => {
         this.borrowRecords = records;
         this.filterBorrowRecords();
+        console.log(this.borrowRecords)
         this.loading = false;
       },
       error: (error: any) => {
@@ -75,6 +78,7 @@ export class BorrowListComponent implements OnInit {
   filterBorrowRecords(): void {
     if (this.statusFilter === 'ALL') {
       this.filteredBorrowRecords = [...this.borrowRecords];
+      console.log('filtered borrow records', this.filteredBorrowRecords)
     } else {
       this.filteredBorrowRecords = this.borrowRecords.filter(record => record.status === this.statusFilter);
     }

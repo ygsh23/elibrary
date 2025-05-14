@@ -4,10 +4,10 @@ export interface Book {
   author: string;
   isbn: string;
   category: string;
-  description: string;
+  description?: string;
   totalCopies: number;
   availableCopies: number;
-  publishedYear: number;
-  publisher: string;
+  publishYear: number;
+  publisher?: string;
   coverImageUrl?: string;
 }

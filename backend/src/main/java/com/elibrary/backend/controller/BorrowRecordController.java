@@ -7,13 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/borrow-records")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(value = "http://localhost:4200")
 public class BorrowRecordController {
 
     private final BorrowRecordService borrowRecordService;
@@ -55,9 +57,18 @@ public class BorrowRecordController {
         Long userId = request.get("userId");
         Long bookId = request.get("bookId");
         
-        return borrowRecordService.requestToBorrowBook(userId, bookId)
-                .map(record -> ResponseEntity.status(HttpStatus.CREATED).body(record))
-                .orElse(ResponseEntity.badRequest().build());
+        System.out.println("DEBUG - Request to borrow book: userId=" + userId + ", bookId=" + bookId);
+        
+        Optional<BorrowRecord> result = borrowRecordService.requestToBorrowBook(userId, bookId);
+        
+        if (result.isPresent()) {
+            BorrowRecord record = result.get();
+            System.out.println("DEBUG - Borrow record created successfully: " + record.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        } else {
+            System.out.println("DEBUG - Failed to create borrow record");
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}/approve")
@@ -77,6 +88,13 @@ public class BorrowRecordController {
     @PutMapping("/{id}/return")
     public ResponseEntity<BorrowRecord> returnBook(@PathVariable Long id) {
         return borrowRecordService.returnBook(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
+    }
+    
+    @PutMapping("/{id}/renew")
+    public ResponseEntity<BorrowRecord> renewBook(@PathVariable Long id) {
+        return borrowRecordService.renewBook(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }

@@ -1,5 +1,6 @@
 package com.elibrary.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,13 @@ public class Book {
     private String isbn;
     
     @Column(nullable = false)
-    private Integer publicationYear;
+    private String publishYear;
+    
+    private String publisher;
+    
+    private String coverImageUrl;
     
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<BorrowRecord> borrowRecords = new ArrayList<>();
 }

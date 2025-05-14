@@ -34,14 +34,19 @@
             <mat-icon>{{book.availableCopies > 0 ? 'check_circle' : 'cancel'}}</mat-icon>
             <span>{{book.availableCopies > 0 ? 'Available' : 'Unavailable'}} ({{book.availableCopies}}/{{book.totalCopies}})</span>
           </div>
-          <p class="book-description">{{book.description | slice:0:100}}{{book.description.length > 100 ? '...' : ''}}</p>
+          <p class="book-description">{{(book.description || '') | slice:0:100}}{{(book.description && book.description.length > 100) ? '...' : ''}}</p>
         </mat-card-content>
         <mat-card-actions>
           <button mat-button [routerLink]="['/books', book.id]">
             <mat-icon>info</mat-icon> Details
           </button>
-          <button mat-raised-button [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook(book.id)">
+          <!-- Borrow button only for non-admin users -->
+          <button *ngIf="!isAdmin" mat-raised-button [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook(book.id)">
             <mat-icon>book</mat-icon> Borrow
+          </button>
+          <!-- Manage button only for admin users -->
+          <button *ngIf="isAdmin" mat-raised-button color="accent" [routerLink]="['/admin/dashboard']">
+            <mat-icon>settings</mat-icon> Manage
           </button>
         </mat-card-actions>
       </mat-card>

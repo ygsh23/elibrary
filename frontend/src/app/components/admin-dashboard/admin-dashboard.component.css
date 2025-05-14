@@ -643,6 +643,7 @@
   border-radius: 30px;
   padding: 0.3rem;
   border: 1px solid rgba(126, 87, 194, 0.3);
+  margin: 10px;
 }
 
 .filter-button {
@@ -731,4 +732,30 @@
   .section-header h2 {
     font-size: 1.5rem;
   }
+}
+
+/* Clickable Borrowed Count */
+.borrowed-count.clickable {
+  cursor: pointer;
+  color: #7e57c2;
+  font-weight: bold;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.borrowed-count.clickable:hover {
+  color: #5e35b1;
+  text-decoration: underline;
+}
+
+.borrowed-count.clickable:after {
+  content: '👁️';
+  font-size: 12px;
+  margin-left: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.borrowed-count.clickable:hover:after {
+  opacity: 1;
 }

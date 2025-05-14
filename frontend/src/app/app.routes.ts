@@ -18,6 +18,7 @@ export const routes: Routes = [
   { path: 'books', component: BookListComponent },
   { path: 'books/:id', component: BookDetailsComponent },
   { path: 'my-books', component: BorrowListComponent, canActivate: [authGuard] },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
   { path: 'admin/books', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
   { path: 'admin/books/add', component: BookFormComponent, canActivate: [authGuard, adminGuard] },
   { path: 'admin/books/edit/:id', component: BookFormComponent, canActivate: [authGuard, adminGuard] },

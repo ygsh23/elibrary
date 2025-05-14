@@ -3,7 +3,7 @@ export interface User {
   name: string;
   email: string;
   role: 'ADMIN' | 'USER';
-  createdAt: Date;
+  createdDate: Date;
   borrowedCount?: number;
   status: 'ACTIVE' | 'INACTIVE';
 }

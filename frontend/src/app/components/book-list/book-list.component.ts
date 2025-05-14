@@ -41,6 +41,7 @@ export class BookListComponent implements OnInit {
   searchQuery = '';
   loading = false;
   isLoggedIn = false;
+  isAdmin = false;
   userId: number | null = null;
 
   constructor(
@@ -53,6 +54,7 @@ export class BookListComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.isLoggedIn = !!user;
+      this.isAdmin = !!user && user.role === 'ADMIN';
       this.userId = user?.id || null;
     });
     
@@ -100,14 +102,30 @@ export class BookListComponent implements OnInit {
       return;
     }
 
+    console.log('Requesting to borrow book with ID:', bookId);
+    
     this.borrowRecordService.requestToBorrowBook(this.userId, bookId).subscribe({
-      next: () => {
-        this.snackBar.open('Book borrow request submitted successfully!', 'Close', { duration: 3000 });
-        this.loadBooks(); // Refresh books to update availability
+      next: (borrowRecord) => {
+        console.log('Borrow record response:', borrowRecord);
+        
+        // Format the due date for display - handle both dueDate and returnDate
+        let dueDate = 'one week';
+        if (borrowRecord?.dueDate) {
+          dueDate = new Date(borrowRecord.dueDate).toLocaleDateString();
+        } else if (borrowRecord?.returnDate) {
+          dueDate = new Date(borrowRecord.returnDate).toLocaleDateString();
+        }
+        
+        this.snackBar.open(`Book borrow request submitted successfully! Due date: ${dueDate}`, 'Close', { duration: 5000 });
+        this.loadBooks(); // Refresh to update availability
       },
       error: (error) => {
         console.error('Error borrowing book:', error);
-        this.snackBar.open('Failed to borrow book. Please try again.', 'Close', { duration: 3000 });
+        if (error.status === 400) {
+          this.snackBar.open('You already have an active request or have borrowed this book.', 'Close', { duration: 3000 });
+        } else {
+          this.snackBar.open('Failed to borrow book. Please try again.', 'Close', { duration: 3000 });
+        }
       }
     });
   }

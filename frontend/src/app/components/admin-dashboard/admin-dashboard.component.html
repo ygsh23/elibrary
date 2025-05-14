@@ -187,17 +187,56 @@
         </div>
       </div>
       
+      <!-- User Filters -->
+      <div class="filter-controls">
+        <div class="cosmic-filter-group">
+          <!-- <span class="filter-label">Role:</span> -->
+          <div class="filter-options">
+            <button 
+              class="filter-button" 
+              [class.active]="userRoleFilter === 'ALL'"
+              (click)="setUserRoleFilter('ALL')">All</button>
+            <button 
+              class="filter-button" 
+              [class.active]="userRoleFilter === 'STUDENT'"
+              (click)="setUserRoleFilter('STUDENT')">Students</button>
+            <button 
+              class="filter-button" 
+              [class.active]="userRoleFilter === 'ADMIN'"
+              (click)="setUserRoleFilter('ADMIN')">Admins</button>
+          </div>
+        </div>
+        
+        <div class="cosmic-filter-group">
+          <!-- <span class="filter-label">Status:</span> -->
+          <div class="filter-options">
+            <button 
+              class="filter-button" 
+              [class.active]="userBorrowFilter === 'ALL'"
+              (click)="setUserBorrowFilter('ALL')">All</button>
+            <button 
+              class="filter-button" 
+              [class.active]="userBorrowFilter === 'ACTIVE'"
+              (click)="setUserBorrowFilter('ACTIVE')">Active Borrowers</button>
+            <button 
+              class="filter-button" 
+              [class.active]="userBorrowFilter === 'NONE'"
+              (click)="setUserBorrowFilter('NONE')">No Active Borrowers</button>
+          </div>
+        </div>
+      </div>
+      
       <div *ngIf="loadingUsers" class="cosmic-loader">
         <div class="loader-planet"></div>
         <div class="loader-orbit"></div>
       </div>
       
-      <div *ngIf="!loadingUsers && users.length === 0" class="empty-galaxy">
+      <div *ngIf="!loadingUsers && filteredUsers.length === 0" class="empty-galaxy">
         <div class="empty-planet"></div>
         <p>No users found</p>
       </div>
       
-      <div *ngIf="!loadingUsers && users.length > 0" class="users-table-container">
+      <div *ngIf="!loadingUsers && filteredUsers.length > 0" class="users-table-container">
         <table class="cosmic-table">
           <thead>
             <tr>
@@ -206,11 +245,11 @@
               <th>Role</th>
               <th>Joined</th>
               <th>Books Borrowed</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users" class="user-row">
+              <th>Actions</th>
+            <tr *ngFor="let user of filteredUsers" class="user-row">
               <td>{{user.name}}</td>
               <td>{{user.email}}</td>
               <td>
@@ -218,16 +257,8 @@
                   {{user.role}}
                 </span>
               </td>
-              <td>{{user.createdAt | date:'mediumDate'}}</td>
-              <td>{{user.borrowedCount || 0}}</td>
-              <td class="actions-cell">
-                <button class="action-button edit" (click)="editUser(user)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button class="action-button" [ngClass]="{'activate': user.status === 'INACTIVE', 'deactivate': user.status === 'ACTIVE'}" (click)="toggleUserStatus(user)">
-                  <mat-icon>{{user.status === 'ACTIVE' ? 'block' : 'how_to_reg'}}</mat-icon>
-                </button>
-              </td>
+              <td>{{user.createdDate | date:'mediumDate'}}</td>
+              <td class="borrowed-count" [class.clickable]="(user.borrowedCount || 0) > 0" (click)="(user.borrowedCount || 0) > 0 && showUserBorrowedBooks(user.id)">{{user.borrowedCount || 0}}</td>
             </tr>
           </tbody>
         </table>

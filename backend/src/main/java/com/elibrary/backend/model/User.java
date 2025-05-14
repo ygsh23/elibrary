@@ -1,10 +1,12 @@
 package com.elibrary.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,12 @@ public class User {
     @Column(nullable = false)
     private String role = "STUDENT"; // STUDENT or ADMIN
     
+    @Column(nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    private Integer borrowedCount = 0;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<BorrowRecord> borrowRecords = new ArrayList<>();
 }

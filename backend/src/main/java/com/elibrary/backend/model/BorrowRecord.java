@@ -1,5 +1,6 @@
 package com.elibrary.backend.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,13 @@ public class BorrowRecord {
     @Column(nullable = false)
     private LocalDate borrowDate;
     
+    private LocalDate dueDate;
+    
     private LocalDate returnDate;
     
     @Column(nullable = false)
     private String status; // PENDING, APPROVED, REJECTED, RETURNED
+    
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private Integer renewCount = 0;
 }

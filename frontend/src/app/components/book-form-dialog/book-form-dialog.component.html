@@ -1,0 +1,120 @@
+<div class="cosmic-dialog">
+  <div class="dialog-header">
+    <h2 class="dialog-title">{{ dialogTitle }}</h2>
+    <div class="cosmic-divider"></div>
+  </div>
+  
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="book-form">
+    <div class="form-fields">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" placeholder="Enter book title">
+          <mat-error *ngIf="bookForm.get('title')?.hasError('required')">
+            Title is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Author</mat-label>
+          <input matInput formControlName="author" placeholder="Enter author name">
+          <mat-error *ngIf="bookForm.get('author')?.hasError('required')">
+            Author is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>ISBN</mat-label>
+          <input matInput formControlName="isbn" placeholder="Enter ISBN">
+          <mat-error *ngIf="bookForm.get('isbn')?.hasError('required')">
+            ISBN is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            <mat-option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="bookForm.get('category')?.hasError('required')">
+            Category is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" placeholder="Enter book description" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Cover Image URL</mat-label>
+          <input matInput formControlName="coverImageUrl" placeholder="Enter URL for book cover image">
+          <mat-hint>Leave empty for default placeholder image</mat-hint>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Publisher</mat-label>
+          <input matInput formControlName="publisher" placeholder="Enter publisher name">
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row three-columns">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Publish Year</mat-label>
+          <input matInput type="number" formControlName="publishYear">
+          <mat-error *ngIf="bookForm.get('publishYear')?.hasError('required')">
+            Publish year is required
+          </mat-error>
+          <mat-error *ngIf="bookForm.get('publishYear')?.hasError('min') || bookForm.get('publishYear')?.hasError('max')">
+            Enter a valid year
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Total Copies</mat-label>
+          <input matInput type="number" formControlName="totalCopies">
+          <mat-error *ngIf="bookForm.get('totalCopies')?.hasError('required')">
+            Total copies is required
+          </mat-error>
+          <mat-error *ngIf="bookForm.get('totalCopies')?.hasError('min')">
+            Must be at least 1
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Available Copies</mat-label>
+          <input matInput type="number" formControlName="availableCopies">
+          <mat-error *ngIf="bookForm.get('availableCopies')?.hasError('required')">
+            Available copies is required
+          </mat-error>
+          <mat-error *ngIf="bookForm.get('availableCopies')?.hasError('min')">
+            Cannot be negative
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    
+    <div class="dialog-actions">
+      <button type="button" mat-button class="cosmic-button cancel-button" (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="submit" mat-button class="cosmic-button submit-button" [disabled]="bookForm.invalid">
+        {{ data.book ? 'Update' : 'Add' }}
+      </button>
+    </div>
+  </form>
+</div>

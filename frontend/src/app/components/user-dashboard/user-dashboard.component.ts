@@ -45,6 +45,7 @@ export class UserDashboardComponent implements OnInit, AfterViewInit {
   loadingBorrowed = false;
   userId: number | null = null;
   userName = '';
+  isAdmin = false;
   displayedColumns: string[] = ['book', 'author', 'borrowDate', 'status', 'actions'];
   
   // Add missing properties for dashboard stats
@@ -72,6 +73,7 @@ export class UserDashboardComponent implements OnInit, AfterViewInit {
       if (user) {
         this.userId = user.id || null;
         this.userName = user.name;
+        this.isAdmin = user.role === 'ADMIN';
         this.loadBooks();
         this.loadBorrowRecords();
         this.loadReadingHistory();
@@ -340,14 +342,34 @@ export class UserDashboardComponent implements OnInit, AfterViewInit {
       return;
     }
     
+    console.log('Requesting to borrow book with ID:', bookId);
+    
     this.borrowRecordService.requestToBorrowBook(this.userId, bookId).subscribe({
-      next: () => {
-        this.snackBar.open('Book borrow request submitted successfully!', 'Close', { duration: 3000 });
+      next: (borrowRecord) => {
+        console.log('Borrow record response:', borrowRecord);
+        
+        // Format the due date for display - handle both dueDate and returnDate
+        let dueDate = 'one week';
+        if (borrowRecord?.dueDate) {
+          dueDate = new Date(borrowRecord.dueDate).toLocaleDateString();
+        } else if (borrowRecord?.returnDate) {
+          dueDate = new Date(borrowRecord.returnDate).toLocaleDateString();
+        }
+        
+        this.snackBar.open(`Book borrow request submitted successfully! Due date: ${dueDate}`, 'Close', { duration: 5000 });
+        
+        // Refresh borrow records to show the new request
         this.loadBorrowRecords();
+        // Also update recommendations since a book has been borrowed
+        this.loadBooks();
       },
       error: (error: any) => {
         console.error('Error borrowing book:', error);
-        this.snackBar.open('Failed to borrow book. Please try again.', 'Close', { duration: 3000 });
+        if (error.status === 400) {
+          this.snackBar.open('You already have an active request or have borrowed this book.', 'Close', { duration: 3000 });
+        } else {
+          this.snackBar.open('Failed to borrow book. Please try again.', 'Close', { duration: 3000 });
+        }
       }
     });
   }

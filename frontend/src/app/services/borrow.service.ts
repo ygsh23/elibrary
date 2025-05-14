@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BorrowService {
-  private apiUrl = `${environment.apiUrl}/borrows`;
+  private apiUrl = `${environment.apiUrl}/borrow-records`;
 
   constructor(private http: HttpClient) { }
 
@@ -50,7 +50,7 @@ export class BorrowService {
   }
 
   approveBorrowRequest(id: number): Observable<boolean> {
-    return this.http.patch<BorrowRecord>(`${this.apiUrl}/${id}/approve`, {}).pipe(
+    return this.http.put<BorrowRecord>(`${this.apiUrl}/${id}/approve`, {}).pipe(
       map(() => true),
       catchError(error => {
         console.error(`Error approving borrow request ${id}:`, error);
@@ -60,7 +60,7 @@ export class BorrowService {
   }
 
   rejectBorrowRequest(id: number): Observable<boolean> {
-    return this.http.patch<BorrowRecord>(`${this.apiUrl}/${id}/reject`, {}).pipe(
+    return this.http.put<BorrowRecord>(`${this.apiUrl}/${id}/reject`, {}).pipe(
       map(() => true),
       catchError(error => {
         console.error(`Error rejecting borrow request ${id}:`, error);
@@ -70,7 +70,7 @@ export class BorrowService {
   }
 
   markAsReturned(id: number): Observable<boolean> {
-    return this.http.patch<BorrowRecord>(`${this.apiUrl}/${id}/return`, {}).pipe(
+    return this.http.put<BorrowRecord>(`${this.apiUrl}/${id}/return`, {}).pipe(
       map(() => true),
       catchError(error => {
         console.error(`Error marking borrow record ${id} as returned:`, error);
@@ -80,7 +80,7 @@ export class BorrowService {
   }
 
   renewBorrow(id: number): Observable<boolean> {
-    return this.http.patch<BorrowRecord>(`${this.apiUrl}/${id}/renew`, {}).pipe(
+    return this.http.put<BorrowRecord>(`${this.apiUrl}/${id}/renew`, {}).pipe(
       map(() => true),
       catchError(error => {
         console.error(`Error renewing borrow record ${id}:`, error);

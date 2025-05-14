@@ -1,0 +1,14 @@
+com/elibrary/backend/BackendApplication$1.class
+com/elibrary/backend/repository/BorrowRecordRepository.class
+com/elibrary/backend/controller/UserController.class
+com/elibrary/backend/controller/BookController.class
+com/elibrary/backend/model/Book.class
+com/elibrary/backend/controller/BorrowRecordController.class
+com/elibrary/backend/BackendApplication.class
+com/elibrary/backend/model/BorrowRecord.class
+com/elibrary/backend/repository/UserRepository.class
+com/elibrary/backend/service/BorrowRecordService.class
+com/elibrary/backend/model/User.class
+com/elibrary/backend/repository/BookRepository.class
+com/elibrary/backend/service/BookService.class
+com/elibrary/backend/service/UserService.class

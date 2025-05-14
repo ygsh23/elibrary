@@ -48,7 +48,7 @@ export class BookFormComponent implements OnInit {
       category: [this.book?.category || '', Validators.required],
       description: [this.book?.description || '', Validators.required],
       isbn: [this.book?.isbn || '', Validators.required],
-      publishedYear: [this.book?.publishedYear || new Date().getFullYear(), Validators.required],
+      publishYear: [this.book?.publishYear || new Date().getFullYear(), Validators.required],
       totalCopies: [this.book?.totalCopies || 1, [Validators.required, Validators.min(1)]],
       availableCopies: [this.book?.availableCopies || 0, [Validators.required, Validators.min(0)]]
     });

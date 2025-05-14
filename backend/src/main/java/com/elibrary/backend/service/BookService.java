@@ -28,7 +28,9 @@ public class BookService {
             book1.setTotalCopies(5);
             book1.setAvailableCopies(5);
             book1.setIsbn("9780061120084");
-            book1.setPublicationYear(1960);
+            book1.setPublishYear("1960");
+            book1.setPublisher("Harper Collins");
+            book1.setCoverImageUrl("");
             bookRepository.save(book1);
 
             // Sample book 2
@@ -40,7 +42,9 @@ public class BookService {
             book2.setTotalCopies(3);
             book2.setAvailableCopies(3);
             book2.setIsbn("9780451524935");
-            book2.setPublicationYear(1949);
+            book2.setPublishYear("1949");
+            book2.setPublisher("Penguin Books");
+            book2.setCoverImageUrl("");
             bookRepository.save(book2);
 
             // Sample book 3
@@ -52,7 +56,9 @@ public class BookService {
             book3.setTotalCopies(4);
             book3.setAvailableCopies(4);
             book3.setIsbn("9780743273565");
-            book3.setPublicationYear(1925);
+            book3.setPublishYear("1925");
+            book3.setPublisher("Scribner");
+            book3.setCoverImageUrl("");
             bookRepository.save(book3);
         }
     }
@@ -81,7 +87,9 @@ public class BookService {
                     existingBook.setCategory(bookDetails.getCategory());
                     existingBook.setDescription(bookDetails.getDescription());
                     existingBook.setIsbn(bookDetails.getIsbn());
-                    existingBook.setPublicationYear(bookDetails.getPublicationYear());
+                    existingBook.setPublishYear(bookDetails.getPublishYear());
+                    existingBook.setPublisher(bookDetails.getPublisher());
+                    existingBook.setCoverImageUrl(bookDetails.getCoverImageUrl());
                     
                     // Update total copies and recalculate available copies
                     int oldTotalCopies = existingBook.getTotalCopies();

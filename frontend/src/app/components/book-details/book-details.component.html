@@ -50,7 +50,7 @@
                   </div>
                   <div class="metadata-item">
                     <mat-icon>calendar_today</mat-icon>
-                    <span>{{book.publishedYear}}</span>
+                    <span>{{book.publishYear}}</span>
                   </div>
                 </div>
                 
@@ -65,8 +65,11 @@
           </mat-card-content>
           
           <mat-card-actions>
-            <button mat-raised-button [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook()">
+            <button mat-raised-button *ngIf="!isAdmin" [disabled]="book.availableCopies === 0 || !isLoggedIn" (click)="borrowBook()">
               <mat-icon>book</mat-icon> Borrow
+            </button>
+            <button mat-raised-button *ngIf="isAdmin" routerLink="/admin/dashboard">
+              <mat-icon>settings</mat-icon> Manage Books
             </button>
           </mat-card-actions>
         </mat-card>
